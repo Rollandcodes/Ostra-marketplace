@@ -44,8 +44,14 @@ export function useLocale() {
 }
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
+  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
+  if (!publishableKey) {
+    return <LocaleProvider>{children}</LocaleProvider>;
+  }
+
   return (
-    <ClerkProvider>
+    <ClerkProvider publishableKey={publishableKey}>
       <LocaleProvider>{children}</LocaleProvider>
     </ClerkProvider>
   );
