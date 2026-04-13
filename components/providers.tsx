@@ -1,6 +1,5 @@
 "use client";
 
-import { ClerkProvider } from '@clerk/nextjs';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { defaultLocale, normalizeLocale, type Locale } from '@/lib/i18n';
 
@@ -44,15 +43,5 @@ export function useLocale() {
 }
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
-  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-
-  if (!publishableKey) {
-    return <LocaleProvider>{children}</LocaleProvider>;
-  }
-
-  return (
-    <ClerkProvider publishableKey={publishableKey}>
-      <LocaleProvider>{children}</LocaleProvider>
-    </ClerkProvider>
-  );
+  return <LocaleProvider>{children}</LocaleProvider>;
 }

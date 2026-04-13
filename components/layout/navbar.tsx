@@ -1,11 +1,26 @@
 "use client";
 
+import { SignInButton, SignUpButton, UserButton, useAuth } from '@clerk/nextjs';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Globe2, MapPin, Search, CircleUserRound, Menu } from 'lucide-react';
 import { locales, type Locale, t } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { useLocale } from '@/components/providers';
+
+function Show({ when, children }: { when: 'signed-in' | 'signed-out'; children: React.ReactNode }) {
+  const { isLoaded, isSignedIn } = useAuth();
+
+  if (!isLoaded) {
+    return null;
+  }
+
+  if (when === 'signed-in') {
+    return isSignedIn ? <>{children}</> : null;
+  }
+
+  return isSignedIn ? null : <>{children}</>;
+}
 
 const navLinks = [
   { href: '/', labelKey: 'marketplace' },
@@ -79,10 +94,24 @@ export function Navbar() {
             <Globe2 className="h-4 w-4" />
             {locales.find((item) => item.value === locale)?.label}
           </button>
-          <Link href="/login" className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-soft transition hover:opacity-90">
-            <CircleUserRound className="h-4 w-4" />
-            Login
-          </Link>
+          <Show when="signed-out">
+            <div className="flex items-center gap-2">
+              <SignInButton mode="modal">
+                <button type="button" className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-soft transition hover:opacity-90">
+                  <CircleUserRound className="h-4 w-4" />
+                  Login
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button type="button" className="inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground shadow-soft transition hover:opacity-90">
+                  Sign up
+                </button>
+              </SignUpButton>
+            </div>
+          </Show>
+          <Show when="signed-in">
+            <UserButton afterSignOutUrl="/" />
+          </Show>
         </div>
 
         <button className="inline-flex items-center rounded-full bg-muted p-2 lg:hidden" aria-label="Menu">
