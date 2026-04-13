@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { ArrowRight, Filter, Search } from 'lucide-react';
 import { FilterSidebar } from '@/components/listings/filter-sidebar';
 import { ListingGrid } from '@/components/listings/listing-grid';
@@ -26,7 +27,9 @@ export default function ListingsPage({ searchParams }: { searchParams?: Record<s
   return (
     <div className="section-shell py-10 lg:py-16">
       <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
-        <FilterSidebar />
+        <Suspense fallback={<aside className="soft-card h-fit p-5 lg:sticky lg:top-24" />}>
+          <FilterSidebar />
+        </Suspense>
 
         <div className="space-y-8">
           <div className="soft-card overflow-hidden p-8">
