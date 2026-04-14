@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Sidebar } from '@/components/layout/sidebar';
 import { currentUser } from '@clerk/nextjs/server';
+import { Camera, MapPin, Tag } from 'lucide-react';
 import { getCurrentOwnerContext } from '@/lib/clerk-ownership';
 
 export default async function SellerNewListingPage() {
@@ -37,6 +38,11 @@ export default async function SellerNewListingPage() {
               <input className="rounded-xl bg-muted px-4 py-3 text-sm" placeholder="Price or entry fee" />
               <input className="rounded-xl bg-muted px-4 py-3 text-sm" placeholder="City / location" />
               <textarea className="min-h-36 rounded-xl bg-muted px-4 py-3 text-sm md:col-span-2" placeholder="Description" />
+            </div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <span className="inline-flex items-center gap-2 rounded-xl bg-primary/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary"><Tag className="h-4 w-4" /> Add tags</span>
+              <span className="inline-flex items-center gap-2 rounded-xl bg-primary/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary"><MapPin className="h-4 w-4" /> Pin location</span>
+              <span className="inline-flex items-center gap-2 rounded-xl bg-primary/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary"><Camera className="h-4 w-4" /> Cover photo</span>
             </div>
           </section>
 

@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { Bookmark, Heart } from 'lucide-react';
 import { Sidebar } from '@/components/layout/sidebar';
 import { normalizeLocale } from '@/lib/i18n';
 import { getMarketplaceListings } from '@/lib/marketplace';
@@ -23,6 +24,24 @@ export default async function BuyerSavedListingsPage({ searchParams }: { searchP
           <Link href="/dashboard/buyer" className="inline-flex items-center rounded-xl bg-muted px-5 py-3 text-sm font-semibold text-foreground/80">
             Back to buyer overview
           </Link>
+        </div>
+
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <div className="soft-card p-6">
+            <p className="text-sm text-muted-foreground">Total saved</p>
+            <p className="mt-4 font-display text-4xl font-extrabold tracking-tight">{saved.length}</p>
+            <p className="mt-2 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary"><Bookmark className="h-4 w-4" /> Curated list</p>
+          </div>
+          <div className="soft-card p-6">
+            <p className="text-sm text-muted-foreground">Favorites this week</p>
+            <p className="mt-4 font-display text-4xl font-extrabold tracking-tight">{Math.min(4, saved.length)}</p>
+            <p className="mt-2 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary"><Heart className="h-4 w-4" /> Updated</p>
+          </div>
+          <div className="soft-card p-6">
+            <p className="text-sm text-muted-foreground">Categories tracked</p>
+            <p className="mt-4 font-display text-4xl font-extrabold tracking-tight">{new Set(saved.map((item) => item.category)).size}</p>
+            <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary">Signals on</p>
+          </div>
         </div>
 
         <div className="mt-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
