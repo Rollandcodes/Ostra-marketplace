@@ -1,15 +1,19 @@
 import Link from 'next/link';
 import { ArrowRight, MessageSquare, Search, ShieldCheck, ShoppingBag, Store } from 'lucide-react';
-import { faqSections } from '@/lib/site-data';
+import { getCmsFaqSections } from '@/lib/cms-content';
+import { normalizeLocale } from '@/lib/i18n';
 
 const icons = {
-  Buying: ShoppingBag,
-  Selling: Store,
-  'Trust & Safety': ShieldCheck,
-  Account: MessageSquare,
+  buying: ShoppingBag,
+  selling: Store,
+  'trust-safety': ShieldCheck,
+  account: MessageSquare,
 };
 
-export default function FaqPage() {
+export default async function FaqPage({ searchParams }: { searchParams?: Record<string, string | string[] | undefined> }) {
+  const locale = normalizeLocale(Array.isArray(searchParams?.lang) ? searchParams?.lang[0] : searchParams?.lang);
+  const faqSections = await getCmsFaqSections();
+
   return (
     <div className="section-shell py-16">
       <section className="text-center">
@@ -24,18 +28,19 @@ export default function FaqPage() {
 
       <section className="mt-16 grid gap-6 lg:grid-cols-2">
         {faqSections.map((section) => {
-          const Icon = icons[section.title as keyof typeof icons] ?? MessageSquare;
+          const title = section.title[locale];
+          const Icon = icons[section.slug as keyof typeof icons] ?? MessageSquare;
           return (
-            <div key={section.title} className={`soft-card p-8 ${section.title === 'Trust & Safety' ? 'bg-primary text-primary-foreground' : ''}`}>
+            <div key={section.slug} className={`soft-card p-8 ${section.slug === 'trust-safety' ? 'bg-primary text-primary-foreground' : ''}`}>
               <div className="flex items-center gap-3">
-                <Icon className={`h-5 w-5 ${section.title === 'Trust & Safety' ? 'text-white' : 'text-primary'}`} />
-                <h2 className="font-display text-3xl font-extrabold tracking-tight">{section.title}</h2>
+                <Icon className={`h-5 w-5 ${section.slug === 'trust-safety' ? 'text-white' : 'text-primary'}`} />
+                <h2 className="font-display text-3xl font-extrabold tracking-tight">{title}</h2>
               </div>
               <div className="mt-6 space-y-4">
                 {section.questions.map((question) => (
-                  <details key={question} className={`rounded-2xl ${section.title === 'Trust & Safety' ? 'bg-white/10' : 'bg-muted'} p-4`}>
-                    <summary className="cursor-pointer list-none font-medium">{question}</summary>
-                    <p className="mt-3 text-sm leading-7 text-muted-foreground">Answers appear here with policy-safe, buyer-friendly guidance and links to the relevant support articles.</p>
+                  <details key={question.question[locale]} className={`rounded-2xl ${section.slug === 'trust-safety' ? 'bg-white/10' : 'bg-muted'} p-4`}>
+                    <summary className="cursor-pointer list-none font-medium">{question.question[locale]}</summary>
+                    <p className="mt-3 text-sm leading-7 text-muted-foreground">{question.answer[locale]}</p>
                   </details>
                 ))}
               </div>
@@ -50,10 +55,10 @@ export default function FaqPage() {
           <h2 className="mt-4 font-display text-4xl font-extrabold tracking-tight text-balance">Still have questions? Our community team is here.</h2>
           <p className="mt-4 max-w-2xl text-muted-foreground">Whether you're a curious buyer or an aspiring producer, we typically respond within two hours during local business hours.</p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="#" className="inline-flex items-center rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground">
+            <Link href="mailto:support@ostra.marketplace?subject=Ostra%20Support%20Request" className="inline-flex items-center rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground">
               Chat with support <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
-            <Link href="#" className="inline-flex items-center rounded-xl bg-muted px-5 py-3 text-sm font-semibold text-foreground">
+            <Link href="mailto:support@ostra.marketplace" className="inline-flex items-center rounded-xl bg-muted px-5 py-3 text-sm font-semibold text-foreground">
               Email us
             </Link>
           </div>

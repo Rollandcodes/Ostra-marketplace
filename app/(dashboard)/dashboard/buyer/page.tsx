@@ -3,12 +3,13 @@ import Link from 'next/link';
 import { ArrowRight, Eye, MessageSquare } from 'lucide-react';
 import { Sidebar } from '@/components/layout/sidebar';
 import { ListingCard } from '@/components/listings/listing-card';
-import { buyerStats, listings } from '@/lib/site-data';
 import { normalizeLocale } from '@/lib/i18n';
+import { getMarketplaceListings } from '@/lib/marketplace';
 
-export default function BuyerDashboardPage({ searchParams }: { searchParams?: Record<string, string | string[] | undefined> }) {
+export default async function BuyerDashboardPage({ searchParams }: { searchParams?: Record<string, string | string[] | undefined> }) {
   const locale = normalizeLocale(Array.isArray(searchParams?.lang) ? searchParams?.lang[0] : searchParams?.lang);
-  const saved = listings.slice(1, 4);
+  const listings = await getMarketplaceListings();
+  const saved = listings.slice(0, 4);
 
   return (
     <div className="flex">
@@ -18,8 +19,8 @@ export default function BuyerDashboardPage({ searchParams }: { searchParams?: Re
         <section className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="hero-kicker">Buyer Hub</p>
-            <h1 id="overview" className="mt-4 font-display text-5xl font-extrabold tracking-tight text-balance">Welcome back, Alex!</h1>
-            <p className="mt-2 max-w-2xl text-muted-foreground">Your local network is growing. There are new listings in your area since yesterday.</p>
+            <h1 id="overview" className="mt-4 font-display text-5xl font-extrabold tracking-tight text-balance">Welcome back!</h1>
+            <p className="mt-2 max-w-2xl text-muted-foreground">Browse live listings, revisit saved items, and continue conversations with sellers.</p>
           </div>
           <Link href="/listings" className="inline-flex items-center rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-soft">
             Start shopping <ArrowRight className="ml-2 h-4 w-4" />
@@ -27,13 +28,21 @@ export default function BuyerDashboardPage({ searchParams }: { searchParams?: Re
         </section>
 
         <div className="mt-8 grid gap-4 md:grid-cols-3">
-          {buyerStats.map((stat) => (
-            <div key={stat.label} className="soft-card p-6">
-              <p className="text-sm text-muted-foreground">{stat.label}</p>
-              <p className="mt-4 font-display text-4xl font-extrabold tracking-tight">{stat.value}</p>
-              <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary">{stat.delta}</p>
-            </div>
-          ))}
+          <div className="soft-card p-6">
+            <p className="text-sm text-muted-foreground">Saved Listings</p>
+            <p className="mt-4 font-display text-4xl font-extrabold tracking-tight">{saved.length}</p>
+            <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary">Ready to compare</p>
+          </div>
+          <div className="soft-card p-6">
+            <p className="text-sm text-muted-foreground">Unread Messages</p>
+            <p className="mt-4 font-display text-4xl font-extrabold tracking-tight">0</p>
+            <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary">Connect inbox to enable</p>
+          </div>
+          <div className="soft-card p-6">
+            <p className="text-sm text-muted-foreground">Recently Viewed</p>
+            <p className="mt-4 font-display text-4xl font-extrabold tracking-tight">{Math.min(saved.length, 5)}</p>
+            <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary">Synced live</p>
+          </div>
         </div>
 
         <div className="mt-8 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
@@ -48,17 +57,17 @@ export default function BuyerDashboardPage({ searchParams }: { searchParams?: Re
               </div>
               <div className="mt-5 overflow-hidden rounded-[1.5rem] bg-muted">
                 <div className="relative aspect-[16/9]">
-                  <Image src={saved[0].images[0]} alt={saved[0].title.en} fill className="object-cover" />
+                  <Image src={saved[0]?.images[0] ?? 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=1200&q=80&auto=format&fit=crop'} alt={saved[0]?.title.en ?? 'Listing'} fill className="object-cover" />
                 </div>
                 <div className="p-5">
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <h3 className="font-display text-xl font-extrabold tracking-tight">{saved[0].title[locale]}</h3>
-                      <p className="text-sm text-muted-foreground">{saved[0].description[locale]}</p>
+                      <h3 className="font-display text-xl font-extrabold tracking-tight">{saved[0]?.title[locale] ?? 'No saved listings yet'}</h3>
+                      <p className="text-sm text-muted-foreground">{saved[0]?.description[locale] ?? 'Your recently viewed items will appear here.'}</p>
                     </div>
-                    <p className="font-display text-2xl font-extrabold text-primary">{saved[0].price.toLocaleString('en-US', { style: 'currency', currency: saved[0].currency, maximumFractionDigits: saved[0].price % 1 ? 2 : 0 })}</p>
+                    <p className="font-display text-2xl font-extrabold text-primary">{saved[0] ? saved[0].price.toLocaleString('en-US', { style: 'currency', currency: saved[0].currency, maximumFractionDigits: saved[0].price % 1 ? 2 : 0 }) : '-'}</p>
                   </div>
-                  <Link href={`/listings/${saved[0].id}`} className="mt-4 inline-flex items-center rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
+                  <Link href={saved[0] ? `/listings/${saved[0].id}` : '/listings'} className="mt-4 inline-flex items-center rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
                     View details
                   </Link>
                 </div>
@@ -75,12 +84,12 @@ export default function BuyerDashboardPage({ searchParams }: { searchParams?: Re
               </div>
               <div className="mt-5 space-y-4">
                 <div className="rounded-2xl bg-primary/10 p-4">
-                  <p className="font-semibold">Green Valley Farm</p>
-                  <p className="mt-1 text-sm text-muted-foreground">Fresh eggs are ready for pickup tomorrow at 10 AM.</p>
+                  <p className="font-semibold">Inbox integration ready</p>
+                  <p className="mt-1 text-sm text-muted-foreground">Real conversations appear here after Supabase message sync is enabled.</p>
                 </div>
                 <div className="rounded-2xl bg-muted p-4">
-                  <p className="font-semibold">The Honey Jar</p>
-                  <p className="mt-1 text-sm text-muted-foreground">They confirmed the honey is raw and never heat treated.</p>
+                  <p className="font-semibold">Need product details?</p>
+                  <p className="mt-1 text-sm text-muted-foreground">Use each listing page to contact the seller directly by email or WhatsApp.</p>
                 </div>
               </div>
             </div>
@@ -90,11 +99,11 @@ export default function BuyerDashboardPage({ searchParams }: { searchParams?: Re
             <div className="soft-card p-6">
               <div className="flex items-center gap-4">
                 <div className="relative h-20 w-20 overflow-hidden rounded-full">
-                  <Image src={saved[0].seller.avatar} alt={saved[0].seller.name} fill className="object-cover" />
+                  <Image src={saved[0]?.seller.avatar ?? 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80&auto=format&fit=crop'} alt={saved[0]?.seller.name ?? 'Buyer avatar'} fill className="object-cover" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Profile</p>
-                  <h2 className="mt-2 font-display text-2xl font-extrabold tracking-tight">Alex Morgan</h2>
+                  <h2 className="mt-2 font-display text-2xl font-extrabold tracking-tight">Buyer Profile</h2>
                 </div>
               </div>
               <div className="mt-5 grid gap-3 text-sm text-muted-foreground">

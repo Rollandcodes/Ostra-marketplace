@@ -23,8 +23,8 @@ const config: Config = {
       },
       borderRadius: { xl: '0.75rem', '2xl': '1.25rem', '3xl': '1.75rem' },
       fontFamily: {
-        sans: ['var(--font-inter)', 'Inter', 'system-ui', 'sans-serif'],
-        display: ['var(--font-manrope)', 'Manrope', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-sans)', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        display: ['var(--font-display)', 'Space Grotesk', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
         soft: '0 20px 60px -24px rgba(22, 163, 74, 0.25)',

@@ -1,8 +1,12 @@
 import Link from 'next/link';
 import { Download, ThumbsUp, ThumbsDown } from 'lucide-react';
-import { policySections } from '@/lib/site-data';
+import { getCmsPolicySections } from '@/lib/cms-content';
+import { normalizeLocale } from '@/lib/i18n';
 
-export default function PoliciesPage() {
+export default async function PoliciesPage({ searchParams }: { searchParams?: Record<string, string | string[] | undefined> }) {
+  const locale = normalizeLocale(Array.isArray(searchParams?.lang) ? searchParams?.lang[0] : searchParams?.lang);
+  const policySections = await getCmsPolicySections();
+
   return (
     <div className="section-shell py-16">
       <section className="soft-card overflow-hidden p-8 lg:p-10">
@@ -14,8 +18,8 @@ export default function PoliciesPage() {
       <div className="mt-16 grid gap-8 lg:grid-cols-[280px_1fr]">
         <aside className="space-y-3">
           {policySections.map((section) => (
-            <Link key={section.title} href={`#${section.title.toLowerCase().replace(/\s+/g, '-')}`} className="soft-card block px-5 py-4 text-sm font-semibold text-foreground/80 transition hover:text-primary">
-              {section.title}
+            <Link key={section.slug} href={`#${section.slug}`} className="soft-card block px-5 py-4 text-sm font-semibold text-foreground/80 transition hover:text-primary">
+              {section.title[locale]}
             </Link>
           ))}
           <div className="soft-card bg-secondary/10 p-5">
@@ -29,10 +33,10 @@ export default function PoliciesPage() {
 
         <section className="space-y-8">
           {policySections.map((section) => (
-            <article key={section.title} id={section.title.toLowerCase().replace(/\s+/g, '-')} className="soft-card p-8">
+            <article key={section.slug} id={section.slug} className="soft-card p-8">
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <h2 className="font-display text-3xl font-extrabold tracking-tight">{section.title}</h2>
+                  <h2 className="font-display text-3xl font-extrabold tracking-tight">{section.title[locale]}</h2>
                   <p className="mt-1 text-sm text-muted-foreground">Effective Date: {section.updated}</p>
                 </div>
                 <span className="rounded-full bg-muted px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-foreground/60">PDF</span>
@@ -40,8 +44,8 @@ export default function PoliciesPage() {
 
               <div className="mt-8 space-y-4">
                 {section.points.map((point, index) => (
-                  <div key={point} className={`rounded-2xl p-5 ${index === 1 ? 'bg-primary/10' : 'bg-muted'}`}>
-                    <p className="text-sm leading-7 text-muted-foreground">{point}</p>
+                  <div key={`${section.slug}-${index}`} className={`rounded-2xl p-5 ${index === 1 ? 'bg-primary/10' : 'bg-muted'}`}>
+                    <p className="text-sm leading-7 text-muted-foreground">{point[locale]}</p>
                   </div>
                 ))}
               </div>
@@ -49,8 +53,8 @@ export default function PoliciesPage() {
               <div className="mt-8 flex items-center justify-between border-t border-black/5 pt-6 text-sm text-muted-foreground">
                 <span>Was this clear?</span>
                 <div className="flex items-center gap-4">
-                  <button className="inline-flex items-center gap-2 rounded-full bg-muted px-4 py-2 font-semibold"><ThumbsUp className="h-4 w-4" /> Helpful</button>
-                  <button className="inline-flex items-center gap-2 rounded-full bg-muted px-4 py-2 font-semibold"><ThumbsDown className="h-4 w-4" /> Needs work</button>
+                  <Link href="mailto:legal@ostra.marketplace?subject=Policy%20Feedback%20Helpful" className="inline-flex items-center gap-2 rounded-full bg-muted px-4 py-2 font-semibold"><ThumbsUp className="h-4 w-4" /> Helpful</Link>
+                  <Link href="mailto:legal@ostra.marketplace?subject=Policy%20Feedback%20Needs%20Work" className="inline-flex items-center gap-2 rounded-full bg-muted px-4 py-2 font-semibold"><ThumbsDown className="h-4 w-4" /> Needs work</Link>
                 </div>
               </div>
             </article>

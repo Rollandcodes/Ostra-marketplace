@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Heart, MapPin, Star } from 'lucide-react';
-import type { Listing } from '@/lib/site-data';
+import type { MarketplaceListing } from '@/lib/marketplace';
 import type { Locale } from '@/lib/i18n';
 
-export function ListingCard({ listing, locale, href = `/listings/${listing.id}` }: { listing: Listing; locale: Locale; href?: string }) {
+export function ListingCard({ listing, locale, href = `/listings/${listing.id}` }: { listing: MarketplaceListing; locale: Locale; href?: string }) {
   const price = listing.isFree ? 'Free' : new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'en-US', { style: 'currency', currency: listing.currency, maximumFractionDigits: listing.price % 1 ? 2 : 0 }).format(listing.price);
 
   return (

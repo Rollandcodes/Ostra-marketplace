@@ -1,12 +1,16 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, PauseCircle, PlayCircle, PlusCircle, Search, ShieldCheck, MessageSquare } from 'lucide-react';
+import { ArrowRight, PlusCircle, Search, ShieldCheck, MessageSquare } from 'lucide-react';
 import { AnalyticsChart } from '@/components/dashboard/analytics-chart';
 import { StatsCard } from '@/components/dashboard/stats-card';
 import { Sidebar } from '@/components/layout/sidebar';
-import { listings, sellerStats } from '@/lib/site-data';
+import { getMarketplaceListings } from '@/lib/marketplace';
 
-export default function SellerDashboardPage() {
+export default async function SellerDashboardPage() {
+  const listings = await getMarketplaceListings();
+  const totalViews = listings.reduce((sum, listing) => sum + listing.views, 0);
+  const featuredCount = listings.filter((listing) => listing.isFeatured).length;
+
   return (
     <div className="flex">
       <Sidebar baseHref="/dashboard/seller" mode="seller" title="Green Valley Farm" subtitle="Verified seller" />
@@ -16,7 +20,7 @@ export default function SellerDashboardPage() {
           <div>
             <p className="hero-kicker">Seller Hub</p>
             <h1 id="overview" className="mt-4 font-display text-5xl font-extrabold tracking-tight text-balance">My Inventory</h1>
-            <p className="mt-2 max-w-2xl text-muted-foreground">Manage your organic harvest and handcrafted agrarian goods.</p>
+            <p className="mt-2 max-w-2xl text-muted-foreground">Manage your listings, visibility, and buyer inquiries from one place.</p>
           </div>
           <Link href="/listings" className="inline-flex items-center rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-soft">
             <PlusCircle className="mr-2 h-4 w-4" /> Add New Listing
@@ -24,10 +28,10 @@ export default function SellerDashboardPage() {
         </div>
 
         <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <StatsCard label={sellerStats[0].label} value={sellerStats[0].value} delta={sellerStats[0].delta} />
-          <StatsCard label={sellerStats[1].label} value={sellerStats[1].value} delta={sellerStats[1].delta} />
-          <StatsCard label={sellerStats[2].label} value={sellerStats[2].value} delta={sellerStats[2].delta} />
-          <StatsCard label={sellerStats[3].label} value={sellerStats[3].value} delta={sellerStats[3].delta} tone="secondary" />
+          <StatsCard label="Total Listings" value={String(listings.length)} delta="Live inventory" />
+          <StatsCard label="Total Views" value={totalViews.toLocaleString()} delta="Audience reach" />
+          <StatsCard label="Featured Listings" value={String(featuredCount)} delta="Boosted placement" />
+          <StatsCard label="Unread Messages" value="0" delta="Connect inbox to enable" tone="secondary" />
         </div>
 
         <div className="mt-8 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
@@ -44,7 +48,7 @@ export default function SellerDashboardPage() {
               </div>
             </div>
             <div className="divide-y divide-black/5">
-              {listings.slice(0, 3).map((listing) => (
+              {listings.slice(0, 6).map((listing) => (
                 <div key={listing.id} className="grid gap-4 px-6 py-5 md:grid-cols-[1.4fr_0.7fr_0.6fr_0.8fr_auto] md:items-center">
                   <div className="flex items-center gap-4">
                     <div className="relative h-14 w-14 overflow-hidden rounded-xl">
@@ -63,9 +67,8 @@ export default function SellerDashboardPage() {
                     </span>
                   </div>
                   <div className="flex items-center gap-2 justify-start md:justify-end">
-                    <button aria-label="Mark listing as sold" title="Mark listing as sold" className="rounded-lg bg-muted p-2 text-foreground/70"><CheckCircle2 className="h-4 w-4" /></button>
-                    <button aria-label="Pause listing" title="Pause listing" className="rounded-lg bg-muted p-2 text-foreground/70"><PauseCircle className="h-4 w-4" /></button>
-                    <button aria-label="Resume listing" title="Resume listing" className="rounded-lg bg-muted p-2 text-foreground/70"><PlayCircle className="h-4 w-4" /></button>
+                    <Link href={`/listings/${listing.id}`} className="rounded-lg bg-muted px-3 py-2 text-xs font-semibold text-foreground/70">View</Link>
+                    <Link href={`mailto:support@ostra.marketplace?subject=Update%20Listing%20${listing.id}`} className="rounded-lg bg-muted px-3 py-2 text-xs font-semibold text-foreground/70">Edit</Link>
                   </div>
                 </div>
               ))}
@@ -84,12 +87,12 @@ export default function SellerDashboardPage() {
               </div>
               <div className="mt-5 space-y-4">
                 <div className="rounded-2xl bg-primary/10 p-4">
-                  <p className="font-semibold">Buyer inquiry on Raw Wildflower Honey</p>
-                  <p className="mt-1 text-sm text-muted-foreground">A buyer asked about pickup tomorrow morning.</p>
+                  <p className="font-semibold">Inbox integration ready</p>
+                  <p className="mt-1 text-sm text-muted-foreground">Connect Supabase messages to see real buyer conversations here.</p>
                 </div>
                 <div className="rounded-2xl bg-muted p-4">
-                  <p className="font-semibold">Listing question on Tractor</p>
-                  <p className="mt-1 text-sm text-muted-foreground">Potential buyer wants service logs and delivery options.</p>
+                  <p className="font-semibold">Need custom workflows?</p>
+                  <p className="mt-1 text-sm text-muted-foreground">Add automated responses for FAQs and shipping questions.</p>
                 </div>
               </div>
             </div>
@@ -113,11 +116,11 @@ export default function SellerDashboardPage() {
           <div className="soft-card p-6">
             <div className="flex items-center gap-4">
               <div className="relative h-24 w-24 overflow-hidden rounded-full">
-                <Image src={listings[0].seller.avatar} alt={listings[0].seller.name} fill className="object-cover" />
+                <Image src={listings[0]?.seller.avatar ?? 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80&auto=format&fit=crop'} alt={listings[0]?.seller.name ?? 'Seller avatar'} fill className="object-cover" />
               </div>
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Profile</p>
-                <h2 className="mt-2 font-display text-2xl font-extrabold tracking-tight">{listings[0].seller.name}</h2>
+                <h2 className="mt-2 font-display text-2xl font-extrabold tracking-tight">{listings[0]?.seller.name ?? 'Your Seller Profile'}</h2>
                 <p className="mt-1 text-sm text-muted-foreground">Protected storefront, verified local seller, and community-first shipping options.</p>
               </div>
             </div>

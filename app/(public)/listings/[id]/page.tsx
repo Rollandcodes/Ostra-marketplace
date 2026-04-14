@@ -2,24 +2,24 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowRight, MessageSquare, PhoneCall, Star, Tag, Heart } from 'lucide-react';
-import { listings } from '@/lib/site-data';
 import { normalizeLocale } from '@/lib/i18n';
 import { ListingCard } from '@/components/listings/listing-card';
+import { getMarketplaceListingById, getMarketplaceListings } from '@/lib/marketplace';
 
 function getLocale(searchParams?: Record<string, string | string[] | undefined>) {
   const value = searchParams?.lang;
   return normalizeLocale(Array.isArray(value) ? value[0] : value);
 }
 
-export default function ListingDetailPage({ params, searchParams }: { params: { id: string }; searchParams?: Record<string, string | string[] | undefined> }) {
+export default async function ListingDetailPage({ params, searchParams }: { params: { id: string }; searchParams?: Record<string, string | string[] | undefined> }) {
   const locale = getLocale(searchParams);
-  const listing = listings.find((item) => item.id === params.id);
+  const listing = await getMarketplaceListingById(params.id);
 
   if (!listing) {
     notFound();
   }
 
-  const similarListings = listings.filter((item) => item.id !== listing.id && item.category === listing.category).slice(0, 4);
+  const similarListings = (await getMarketplaceListings({ category: listing.category })).filter((item) => item.id !== listing.id).slice(0, 4);
 
   return (
     <div className="section-shell py-10 lg:py-16">
@@ -74,17 +74,29 @@ export default function ListingDetailPage({ params, searchParams }: { params: { 
           </div>
 
           <div className="grid gap-3">
-            <button className="inline-flex items-center justify-center rounded-xl bg-primary px-5 py-4 font-semibold text-primary-foreground shadow-soft">
+            <a href={`mailto:${listing.seller.email}?subject=Inquiry about ${encodeURIComponent(listing.title[locale])}`} className="inline-flex items-center justify-center rounded-xl bg-primary px-5 py-4 font-semibold text-primary-foreground shadow-soft">
               <MessageSquare className="mr-2 h-4 w-4" /> Send Message
-            </button>
+            </a>
             <div className="grid grid-cols-2 gap-3">
-              <button className="inline-flex items-center justify-center rounded-xl bg-muted px-5 py-4 font-semibold text-foreground">
+              <a href={listing.seller.whatsapp ? `https://wa.me/${listing.seller.whatsapp.replace(/\D/g, '')}` : '#'} className="inline-flex items-center justify-center rounded-xl bg-muted px-5 py-4 font-semibold text-foreground">
                 <PhoneCall className="mr-2 h-4 w-4" /> WhatsApp
-              </button>
-              <button className="inline-flex items-center justify-center rounded-xl bg-secondary px-5 py-4 font-semibold text-secondary-foreground">
-                Email Seller
-              </button>
+              </a>
+              <a href={`https://www.google.com/maps/search/?api=1&query=${listing.mapsQuery}`} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-xl bg-secondary px-5 py-4 font-semibold text-secondary-foreground">
+                Open in Maps
+              </a>
             </div>
+          </div>
+
+          <div className="soft-card p-4">
+            <p className="text-sm font-semibold">Location</p>
+            <p className="mt-1 text-sm text-muted-foreground">{listing.location || 'Location not provided'}</p>
+            <iframe
+              className="mt-3 h-56 w-full rounded-xl border-0"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              src={`https://www.google.com/maps?q=${listing.mapsQuery}&output=embed`}
+              title="Listing location map"
+            />
           </div>
         </aside>
       </div>

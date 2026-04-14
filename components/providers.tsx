@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { defaultLocale, normalizeLocale, type Locale } from '@/lib/i18n';
 
 type LocaleContextValue = { locale: Locale; setLocale: (locale: Locale) => void };
@@ -9,6 +10,7 @@ const LocaleContext = createContext<LocaleContextValue | null>(null);
 
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(defaultLocale);
+  const router = useRouter();
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -24,11 +26,12 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
         setLocaleState(nextLocale);
         window.localStorage.setItem('ostra-locale', nextLocale);
         const url = new URL(window.location.href);
-        url.searchParams.set('lang', nextLocale);
-        window.history.replaceState({}, '', url.toString());
+        const params = new URLSearchParams(url.searchParams.toString());
+        params.set('lang', nextLocale);
+        router.replace(`${url.pathname}?${params.toString()}`);
       },
     }),
-    [locale],
+    [locale, router],
   );
 
   return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>;

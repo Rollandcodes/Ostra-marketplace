@@ -1,17 +1,20 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, BadgeCheck, ChevronRight, MapPin, Search, Sprout } from 'lucide-react';
-import { categories, featuredListings, listings } from '@/lib/site-data';
 import { normalizeLocale, type Locale, t } from '@/lib/i18n';
 import { ListingCard } from '@/components/listings/listing-card';
+import { getMarketplaceCategories, getMarketplaceListings } from '@/lib/marketplace';
 
 function getLocale(searchParams?: Record<string, string | string[] | undefined>) {
   const value = searchParams?.lang;
   return normalizeLocale(Array.isArray(value) ? value[0] : value);
 }
 
-export default function HomePage({ searchParams }: { searchParams?: Record<string, string | string[] | undefined> }) {
+export default async function HomePage({ searchParams }: { searchParams?: Record<string, string | string[] | undefined> }) {
   const locale = getLocale(searchParams);
+  const [categories, listings] = await Promise.all([getMarketplaceCategories(), getMarketplaceListings()]);
+  const featuredListings = listings.filter((listing) => listing.isFeatured).slice(0, 3);
+  const heroListing = featuredListings[0] ?? listings[0] ?? null;
 
   return (
     <div className="overflow-hidden">
@@ -28,19 +31,19 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
             </p>
           </div>
 
-          <div className="soft-card flex flex-col gap-3 p-3 md:flex-row md:items-center">
+          <form action="/listings" className="soft-card flex flex-col gap-3 p-3 md:flex-row md:items-center">
             <div className="flex flex-1 items-center gap-3 rounded-xl bg-muted px-4 py-3">
               <Search className="h-4 w-4 text-foreground/40" />
-              <input className="w-full bg-transparent outline-none placeholder:text-foreground/40" placeholder="What are you looking for?" />
+              <input name="q" className="w-full bg-transparent outline-none placeholder:text-foreground/40" placeholder="What are you looking for?" />
             </div>
             <div className="flex flex-1 items-center gap-3 rounded-xl bg-muted px-4 py-3">
               <MapPin className="h-4 w-4 text-foreground/40" />
-              <input className="w-full bg-transparent outline-none placeholder:text-foreground/40" placeholder="Turkey, Cyprus" />
+              <input name="location" className="w-full bg-transparent outline-none placeholder:text-foreground/40" placeholder="Turkey, Cyprus" />
             </div>
-            <button className="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-soft transition hover:opacity-90">
+            <button type="submit" className="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-soft transition hover:opacity-90">
               Search
             </button>
-          </div>
+          </form>
 
           <div className="flex flex-wrap gap-3">
             <Link href="/signup" className="inline-flex items-center rounded-xl bg-secondary px-5 py-3 text-sm font-semibold text-secondary-foreground shadow-soft transition hover:opacity-90">
@@ -56,13 +59,15 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
           <div className="absolute -left-8 -top-8 h-36 w-36 rounded-full bg-primary/10 blur-3xl" />
           <div className="soft-card relative overflow-hidden p-4">
             <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem]">
-              <Image src={featuredListings[0].images[0]} alt={featuredListings[0].title[locale as Locale]} fill className="object-cover" sizes="(max-width: 1024px) 100vw, 40vw" />
+              {heroListing ? (
+                <Image src={heroListing.images[0]} alt={heroListing.title[locale as Locale]} fill className="object-cover" sizes="(max-width: 1024px) 100vw, 40vw" />
+              ) : null}
               <div className="absolute inset-x-4 bottom-4 rounded-[1.25rem] bg-white/90 p-4 backdrop-blur">
                 <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
                   <BadgeCheck className="h-4 w-4" /> Certified Local
                 </div>
-                <p className="mt-2 text-lg font-display font-extrabold tracking-tight">{featuredListings[0].title[locale as Locale]}</p>
-                <p className="text-sm text-muted-foreground">{featuredListings[0].seller.name} · {featuredListings[0].city}, {featuredListings[0].region}</p>
+                <p className="mt-2 text-lg font-display font-extrabold tracking-tight">{heroListing?.title[locale as Locale] ?? 'No featured listings yet'}</p>
+                <p className="text-sm text-muted-foreground">{heroListing ? `${heroListing.seller.name} · ${heroListing.city}, ${heroListing.region}` : 'Create your first listing from the seller dashboard.'}</p>
               </div>
             </div>
           </div>
@@ -86,7 +91,7 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
                 <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/10 text-primary">
                   <Sprout className="h-5 w-5" />
                 </span>
-                <span className="text-sm font-semibold">{category.name[locale as Locale]}</span>
+                <span className="text-sm font-semibold">{category.name}</span>
               </Link>
             ))}
           </div>
@@ -106,7 +111,7 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
         </div>
 
         <div className="mt-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {featuredListings.slice(0, 3).map((listing) => (
+          {featuredListings.map((listing) => (
             <ListingCard key={listing.id} listing={listing} locale={locale as Locale} />
           ))}
         </div>

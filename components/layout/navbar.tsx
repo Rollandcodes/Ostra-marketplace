@@ -3,6 +3,7 @@
 import { SignInButton, SignUpButton, UserButton, useAuth } from '@clerk/nextjs';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { Globe2, MapPin, Search, CircleUserRound, Menu } from 'lucide-react';
 import { locales, type Locale, t } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
@@ -37,11 +38,33 @@ export function Navbar() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { locale, setLocale } = useLocale();
+  const [search, setSearch] = useState('');
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    setSearch(searchParams.get('q') ?? '');
+  }, [searchParams]);
 
   const updateQuery = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
-    params.set(key, value);
+    if (value) {
+      params.set(key, value);
+    } else {
+      params.delete(key);
+    }
     router.replace(`${pathname}?${params.toString()}`);
+  };
+
+  const submitSearch = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const params = new URLSearchParams(searchParams.toString());
+    if (search.trim()) {
+      params.set('q', search.trim());
+    } else {
+      params.delete('q');
+    }
+    router.push(`/listings?${params.toString()}`);
+    setMobileOpen(false);
   };
 
   return (
@@ -71,29 +94,44 @@ export function Navbar() {
         </div>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <div className="flex items-center gap-2 rounded-full bg-muted px-3 py-2 text-sm text-foreground/70">
+          <form onSubmit={submitSearch} className="flex items-center gap-2 rounded-full bg-muted px-3 py-2 text-sm text-foreground/70">
             <Search className="h-4 w-4" />
-            <input className="w-48 bg-transparent outline-none placeholder:text-foreground/40" placeholder="Search marketplace..." />
-          </div>
-          <button
-            type="button"
-            className="inline-flex items-center gap-2 rounded-full bg-muted px-3 py-2 text-sm font-medium text-foreground/80"
-            onClick={() => updateQuery('region', regions[(regions.indexOf(searchParams.get('region') ?? regions[0]) + 1) % regions.length])}
-          >
+            <input value={search} onChange={(event) => setSearch(event.target.value)} className="w-48 bg-transparent outline-none placeholder:text-foreground/40" placeholder="Search marketplace..." />
+          </form>
+          <label className="inline-flex items-center gap-2 rounded-full bg-muted px-3 py-2 text-sm font-medium text-foreground/80">
             <MapPin className="h-4 w-4" />
-            {searchParams.get('region') ?? regions[0]}
-          </button>
-          <button
-            type="button"
-            className="inline-flex items-center gap-2 rounded-full bg-muted px-3 py-2 text-sm font-medium text-foreground/80"
-            onClick={() => {
-              const next = locales[(locales.findIndex((item) => item.value === locale) + 1) % locales.length] as { value: Locale };
-              setLocale(next.value);
-            }}
-          >
+            <select
+              aria-label="Select region"
+              value={searchParams.get('region') ?? regions[0]}
+              onChange={(event) => updateQuery('region', event.target.value)}
+              className="bg-transparent outline-none"
+            >
+              {regions.map((region) => (
+                <option key={region} value={region}>
+                  {region}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="inline-flex items-center gap-2 rounded-full bg-muted px-3 py-2 text-sm font-medium text-foreground/80">
             <Globe2 className="h-4 w-4" />
-            {locales.find((item) => item.value === locale)?.label}
-          </button>
+            <select
+              aria-label="Select language"
+              value={locale}
+              onChange={(event) => {
+                const next = event.target.value as Locale;
+                setLocale(next);
+                updateQuery('lang', next);
+              }}
+              className="bg-transparent outline-none"
+            >
+              {locales.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {item.region}
+                </option>
+              ))}
+            </select>
+          </label>
           <Show when="signed-out">
             <div className="flex items-center gap-2">
               <SignInButton mode="modal">
@@ -114,10 +152,55 @@ export function Navbar() {
           </Show>
         </div>
 
-        <button className="inline-flex items-center rounded-full bg-muted p-2 lg:hidden" aria-label="Menu">
+        <button onClick={() => setMobileOpen((value) => !value)} className="inline-flex items-center rounded-full bg-muted p-2 lg:hidden" aria-label="Menu" type="button">
           <Menu className="h-5 w-5" />
         </button>
       </div>
+      {mobileOpen ? (
+        <div className="section-shell space-y-4 border-t border-black/5 py-4 lg:hidden">
+          <form onSubmit={submitSearch} className="flex items-center gap-2 rounded-xl bg-muted px-3 py-2 text-sm text-foreground/70">
+            <Search className="h-4 w-4" />
+            <input value={search} onChange={(event) => setSearch(event.target.value)} className="w-full bg-transparent outline-none placeholder:text-foreground/40" placeholder="Search marketplace..." />
+          </form>
+          <div className="grid grid-cols-2 gap-3">
+            <select
+              aria-label="Select region"
+              value={searchParams.get('region') ?? regions[0]}
+              onChange={(event) => updateQuery('region', event.target.value)}
+              className="rounded-xl bg-muted px-3 py-2 text-sm"
+            >
+              {regions.map((region) => (
+                <option key={region} value={region}>
+                  {region}
+                </option>
+              ))}
+            </select>
+            <select
+              aria-label="Select language"
+              value={locale}
+              onChange={(event) => {
+                const next = event.target.value as Locale;
+                setLocale(next);
+                updateQuery('lang', next);
+              }}
+              className="rounded-xl bg-muted px-3 py-2 text-sm"
+            >
+              {locales.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {item.region}
+                </option>
+              ))}
+            </select>
+          </div>
+          <nav className="grid gap-2">
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href} className="rounded-xl bg-muted px-4 py-2 text-sm font-medium" onClick={() => setMobileOpen(false)}>
+                {t(link.labelKey as Parameters<typeof t>[0], locale)}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      ) : null}
     </header>
   );
 }

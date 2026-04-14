@@ -1,22 +1,27 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { blogPosts } from '@/lib/site-data';
+import { getCmsBlogPosts } from '@/lib/cms-content';
+import { normalizeLocale } from '@/lib/i18n';
 
-export default function BlogPage() {
+export default async function BlogPage({ searchParams }: { searchParams?: Record<string, string | string[] | undefined> }) {
+  const locale = normalizeLocale(Array.isArray(searchParams?.lang) ? searchParams?.lang[0] : searchParams?.lang);
+  const blogPosts = await getCmsBlogPosts();
+  const featuredPost = blogPosts.find((post) => post.is_featured) ?? blogPosts[0];
+
   return (
     <div className="section-shell py-16">
       <section className="soft-card grid gap-8 overflow-hidden p-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
         <div>
           <p className="hero-kicker">Featured editorial</p>
-          <h1 className="mt-4 max-w-3xl font-display text-5xl font-extrabold tracking-tight text-balance">The Soil&apos;s Secret: Reviving Ancient Grains.</h1>
-          <p className="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">A new generation of agrarians is looking back to move forward. Discover how heirloom seeds are healing the ecosystem and our tables.</p>
+          <h1 className="mt-4 max-w-3xl font-display text-5xl font-extrabold tracking-tight text-balance">{featuredPost?.title[locale] ?? 'The Soil&apos;s Secret: Reviving Ancient Grains.'}</h1>
+          <p className="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">{featuredPost?.excerpt[locale] ?? 'A new generation of agrarians is looking back to move forward. Discover how heirloom seeds are healing the ecosystem and our tables.'}</p>
           <Link href="#stories" className="mt-6 inline-flex items-center rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-soft">
             Read full story <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </div>
         <div className="relative overflow-hidden rounded-[2rem]">
-          <Image src={blogPosts[0].image} alt={blogPosts[0].title.en} width={1600} height={1200} className="h-full w-full object-cover" />
+          {featuredPost ? <Image src={featuredPost.image} alt={featuredPost.title[locale]} width={1600} height={1200} className="h-full w-full object-cover" /> : null}
         </div>
       </section>
 
@@ -24,12 +29,12 @@ export default function BlogPage() {
         {blogPosts.map((post) => (
           <article key={post.slug} className="soft-card overflow-hidden">
             <div className="relative aspect-[16/10]">
-              <Image src={post.image} alt={post.title.en} fill className="object-cover" />
+              <Image src={post.image} alt={post.title[locale]} fill className="object-cover" />
             </div>
             <div className="p-6">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">{post.category}</p>
-              <h2 className="mt-3 font-display text-2xl font-extrabold tracking-tight">{post.title.en}</h2>
-              <p className="mt-2 text-sm text-muted-foreground">{post.excerpt.en}</p>
+              <h2 className="mt-3 font-display text-2xl font-extrabold tracking-tight">{post.title[locale]}</h2>
+              <p className="mt-2 text-sm text-muted-foreground">{post.excerpt[locale]}</p>
               <p className="mt-4 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">{post.date}</p>
             </div>
           </article>

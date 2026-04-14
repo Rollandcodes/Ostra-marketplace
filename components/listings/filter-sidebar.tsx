@@ -2,10 +2,11 @@
 
 import { useMemo } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { categories } from '@/lib/site-data';
 import { cn } from '@/lib/utils';
 
-export function FilterSidebar() {
+type FilterCategory = { slug: string; name: string };
+
+export function FilterSidebar({ categories }: { categories: FilterCategory[] }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -15,6 +16,7 @@ export function FilterSidebar() {
       category: searchParams.get('category') ?? 'all',
       condition: searchParams.get('condition') ?? 'all',
       location: searchParams.get('location') ?? 'Turkey, Cyprus',
+      query: searchParams.get('q') ?? '',
     }),
     [searchParams],
   );
@@ -32,6 +34,8 @@ export function FilterSidebar() {
         <input
           className="mt-3 w-full rounded-xl bg-muted px-4 py-3 text-sm outline-none placeholder:text-foreground/40"
           placeholder="Search Ostra..."
+          value={filters.query}
+          onChange={(event) => setFilter('q', event.target.value)}
         />
       </div>
 
@@ -49,7 +53,7 @@ export function FilterSidebar() {
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/60">Category</p>
         <div className="mt-3 flex flex-wrap gap-2">
-          {['all', ...categories.slice(0, 8).map((item) => item.slug)].map((category) => (
+          {['all', ...categories.map((item) => item.slug)].map((category) => (
             <button
               key={category}
               className={cn(
@@ -59,7 +63,7 @@ export function FilterSidebar() {
               onClick={() => setFilter('category', category)}
               type="button"
             >
-              {category === 'all' ? 'All' : categories.find((item) => item.slug === category)?.name.en ?? category}
+              {category === 'all' ? 'All' : categories.find((item) => item.slug === category)?.name ?? category}
             </button>
           ))}
         </div>

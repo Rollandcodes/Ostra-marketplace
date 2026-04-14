@@ -1,5 +1,6 @@
 "use client";
 
+import { SignOutButton } from '@clerk/nextjs';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, Bookmark, MessageSquare, UserRound, Package, BarChart3, LogOut } from 'lucide-react';
@@ -55,10 +56,12 @@ export function Sidebar({ baseHref, mode, title, subtitle }: { baseHref: string;
       <div className="mt-auto rounded-2xl bg-primary/10 p-4">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Need help?</p>
         <p className="mt-2 text-sm text-foreground/70">Support is available during local business hours.</p>
-        <button className="mt-4 inline-flex items-center rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
-          <LogOut className="mr-2 h-4 w-4" />
-          Sign out
-        </button>
+        <SignOutButton>
+          <button type="button" className="mt-4 inline-flex items-center rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
+            <LogOut className="mr-2 h-4 w-4" />
+            Sign out
+          </button>
+        </SignOutButton>
       </div>
     </aside>
   );
