@@ -27,7 +27,7 @@ export default async function SellerDashboardPage() {
             <h1 id="overview" className="mt-4 font-display text-5xl font-extrabold tracking-tight text-balance">My Inventory</h1>
             <p className="mt-2 max-w-2xl text-muted-foreground">Manage your listings, visibility, and buyer inquiries from one place.</p>
           </div>
-          <Link href="/listings" className="inline-flex items-center rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-soft">
+          <Link href="/dashboard/seller/new-listing" className="inline-flex items-center rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-soft">
             <PlusCircle className="mr-2 h-4 w-4" /> Add New Listing
           </Link>
         </div>

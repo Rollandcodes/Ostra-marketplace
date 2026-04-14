@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 
 const buyerItems = [
   { href: '#overview', label: 'Overview', icon: LayoutDashboard },
-  { href: '#saved', label: 'Saved Listings', icon: Bookmark },
+  { href: '/dashboard/buyer/saved-listings', label: 'Saved Listings', icon: Bookmark },
   { href: '/dashboard/inbox', label: 'Messages', icon: MessageSquare },
   { href: '#profile', label: 'Profile', icon: UserRound },
 ];

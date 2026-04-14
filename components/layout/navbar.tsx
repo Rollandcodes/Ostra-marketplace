@@ -26,6 +26,9 @@ function Show({ when, children }: { when: 'signed-in' | 'signed-out'; children: 
 const navLinks = [
   { href: '/', labelKey: 'marketplace' },
   { href: '/dashboard/seller', labelKey: 'sell' },
+  { href: '/list-property-or-event', label: 'List Property/Event' },
+  { href: '/events-discovery', label: 'Events' },
+  { href: '/property-hospitality', label: 'Properties' },
   { href: '/dashboard/seller', labelKey: 'dashboard' },
   { href: '/about', labelKey: 'stories' },
   { href: '/faq', labelKey: 'faq' },
@@ -86,7 +89,7 @@ export function Navbar() {
                     active ? 'text-primary underline decoration-primary decoration-2 underline-offset-8' : 'text-foreground/70 hover:text-foreground',
                   )}
                 >
-                  {t(link.labelKey as Parameters<typeof t>[0], locale)}
+                  {link.label ?? t(link.labelKey as Parameters<typeof t>[0], locale)}
                 </Link>
               );
             })}
@@ -195,7 +198,7 @@ export function Navbar() {
           <nav className="grid gap-2">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href} className="rounded-xl bg-muted px-4 py-2 text-sm font-medium" onClick={() => setMobileOpen(false)}>
-                {t(link.labelKey as Parameters<typeof t>[0], locale)}
+                {link.label ?? t(link.labelKey as Parameters<typeof t>[0], locale)}
               </Link>
             ))}
           </nav>
