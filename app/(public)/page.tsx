@@ -1,9 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, BadgeCheck, ChevronRight, MapPin, Search, Sprout } from 'lucide-react';
+import { ArrowRight, BadgeCheck, ChevronRight, MapPin, Search, Sparkles, Sprout } from 'lucide-react';
 import { normalizeLocale, type Locale, t } from '@/lib/i18n';
 import { ListingCard } from '@/components/listings/listing-card';
 import { getMarketplaceCategories, getMarketplaceListings } from '@/lib/marketplace';
+
+export const metadata = {
+  title: 'Ostra Marketplace',
+  description: 'Buy and sell locally across Turkey, Northern Cyprus, and South Cyprus with live marketplace listings, trusted producers, and a modern agrarian shopping experience.',
+};
 
 function getLocale(searchParams?: Record<string, string | string[] | undefined>) {
   const value = searchParams?.lang;
@@ -18,56 +23,76 @@ export default async function HomePage({ searchParams }: { searchParams?: Record
 
   return (
     <div className="overflow-hidden">
-      <section className="section-shell grid gap-12 py-16 lg:grid-cols-2 lg:items-center lg:py-24">
-        <div className="space-y-8">
-          <div className="hero-kicker">Our mission</div>
-          <div className="space-y-4">
-            <h1 className="font-display text-5xl font-extrabold tracking-tight text-balance md:text-7xl">
-              Buy & sell locally.
-              <span className="block text-primary">No fees. No fuss.</span>
-            </h1>
-            <p className="max-w-xl text-lg leading-8 text-muted-foreground">
-              {t('heroTagline', locale)}
-            </p>
+      <section className="relative">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,rgba(22,163,74,0.16),transparent_30%),radial-gradient(circle_at_top_right,rgba(245,158,11,0.14),transparent_28%),linear-gradient(180deg,rgba(255,255,255,1),rgba(250,248,241,0.95))]" />
+        <div className="section-shell grid gap-12 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-24">
+          <div className="space-y-8">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-white/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary shadow-sm">
+              <Sparkles className="h-4 w-4" /> Hyperlocal marketplace
+            </div>
+            <div className="space-y-4">
+              <h1 className="font-display text-5xl font-extrabold tracking-tight text-balance md:text-7xl">
+                Buy & sell locally.
+                <span className="block text-primary">Fresh goods, trusted makers, fast discovery.</span>
+              </h1>
+              <p className="max-w-xl text-lg leading-8 text-muted-foreground">
+                {t('heroTagline', locale)}
+              </p>
+            </div>
+
+            <form action="/listings" className="soft-card flex flex-col gap-3 p-3 md:flex-row md:items-center">
+              <div className="flex flex-1 items-center gap-3 rounded-xl bg-muted px-4 py-3">
+                <Search className="h-4 w-4 text-foreground/40" />
+                <input name="q" className="w-full bg-transparent outline-none placeholder:text-foreground/40" placeholder="What are you looking for?" />
+              </div>
+              <div className="flex flex-1 items-center gap-3 rounded-xl bg-muted px-4 py-3">
+                <MapPin className="h-4 w-4 text-foreground/40" />
+                <input name="location" className="w-full bg-transparent outline-none placeholder:text-foreground/40" placeholder="Turkey, Cyprus" />
+              </div>
+              <button type="submit" className="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-soft transition hover:opacity-90">
+                Search
+              </button>
+            </form>
+
+            <div className="flex flex-wrap gap-3">
+              <Link href="/signup" className="inline-flex items-center rounded-xl bg-secondary px-5 py-3 text-sm font-semibold text-secondary-foreground shadow-soft transition hover:opacity-90">
+                Become a Member
+              </Link>
+              <Link href="/about" className="inline-flex items-center rounded-xl bg-black/5 px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-black/10">
+                Our Charter
+              </Link>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div className="soft-card p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Discover</p>
+                <p className="mt-2 text-sm text-muted-foreground">Category shortcuts and curated listings from nearby producers.</p>
+              </div>
+              <div className="soft-card p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Trust</p>
+                <p className="mt-2 text-sm text-muted-foreground">Verified sellers, mapped pickup points, and live contact options.</p>
+              </div>
+              <div className="soft-card p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Logistics</p>
+                <p className="mt-2 text-sm text-muted-foreground">Pickup, delivery, and direct messaging across every listing.</p>
+              </div>
+            </div>
           </div>
 
-          <form action="/listings" className="soft-card flex flex-col gap-3 p-3 md:flex-row md:items-center">
-            <div className="flex flex-1 items-center gap-3 rounded-xl bg-muted px-4 py-3">
-              <Search className="h-4 w-4 text-foreground/40" />
-              <input name="q" className="w-full bg-transparent outline-none placeholder:text-foreground/40" placeholder="What are you looking for?" />
-            </div>
-            <div className="flex flex-1 items-center gap-3 rounded-xl bg-muted px-4 py-3">
-              <MapPin className="h-4 w-4 text-foreground/40" />
-              <input name="location" className="w-full bg-transparent outline-none placeholder:text-foreground/40" placeholder="Turkey, Cyprus" />
-            </div>
-            <button type="submit" className="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-soft transition hover:opacity-90">
-              Search
-            </button>
-          </form>
-
-          <div className="flex flex-wrap gap-3">
-            <Link href="/signup" className="inline-flex items-center rounded-xl bg-secondary px-5 py-3 text-sm font-semibold text-secondary-foreground shadow-soft transition hover:opacity-90">
-              Become a Member
-            </Link>
-            <Link href="/about" className="inline-flex items-center rounded-xl bg-black/5 px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-black/10">
-              Our Charter
-            </Link>
-          </div>
-        </div>
-
-        <div className="relative">
-          <div className="absolute -left-8 -top-8 h-36 w-36 rounded-full bg-primary/10 blur-3xl" />
-          <div className="soft-card relative overflow-hidden p-4">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem]">
-              {heroListing ? (
-                <Image src={heroListing.images[0]} alt={heroListing.title[locale as Locale]} fill className="object-cover" sizes="(max-width: 1024px) 100vw, 40vw" />
-              ) : null}
-              <div className="absolute inset-x-4 bottom-4 rounded-[1.25rem] bg-white/90 p-4 backdrop-blur">
-                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-                  <BadgeCheck className="h-4 w-4" /> Certified Local
+          <div className="relative">
+            <div className="absolute -left-8 -top-8 h-36 w-36 rounded-full bg-primary/10 blur-3xl" />
+            <div className="soft-card relative overflow-hidden p-4">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem]">
+                {heroListing ? (
+                  <Image src={heroListing.images[0]} alt={heroListing.title[locale as Locale]} fill className="object-cover" sizes="(max-width: 1024px) 100vw, 40vw" />
+                ) : null}
+                <div className="absolute inset-x-4 bottom-4 rounded-[1.25rem] bg-white/90 p-4 backdrop-blur">
+                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+                    <BadgeCheck className="h-4 w-4" /> Certified Local
+                  </div>
+                  <p className="mt-2 text-lg font-display font-extrabold tracking-tight">{heroListing?.title[locale as Locale] ?? 'No featured listings yet'}</p>
+                  <p className="text-sm text-muted-foreground">{heroListing ? `${heroListing.seller.name} · ${heroListing.city}, ${heroListing.region}` : 'Create your first listing from the seller dashboard.'}</p>
                 </div>
-                <p className="mt-2 text-lg font-display font-extrabold tracking-tight">{heroListing?.title[locale as Locale] ?? 'No featured listings yet'}</p>
-                <p className="text-sm text-muted-foreground">{heroListing ? `${heroListing.seller.name} · ${heroListing.city}, ${heroListing.region}` : 'Create your first listing from the seller dashboard.'}</p>
               </div>
             </div>
           </div>
@@ -87,7 +112,7 @@ export default async function HomePage({ searchParams }: { searchParams?: Record
           </div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
             {categories.map((category) => (
-              <Link key={category.slug} href={`/listings?category=${category.slug}`} className="soft-card flex flex-col items-center gap-3 p-6 text-center transition hover:-translate-y-1">
+              <Link key={category.slug} href={`/listings?category=${category.slug}`} className="soft-card flex flex-col items-center gap-3 p-6 text-center transition hover:-translate-y-1 hover:shadow-lift">
                 <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/10 text-primary">
                   <Sprout className="h-5 w-5" />
                 </span>

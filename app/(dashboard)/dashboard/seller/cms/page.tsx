@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { revalidatePath } from 'next/cache';
 import { ArrowLeft, FilePenLine, FolderHeart, PlusCircle, Trash2 } from 'lucide-react';
+import { redirect } from 'next/navigation';
 import { Sidebar } from '@/components/layout/sidebar';
+import { getCurrentOwnerContext } from '@/lib/clerk-ownership';
 import {
   deleteBlogPost,
   deleteFaqQuestion,
@@ -129,11 +131,16 @@ async function removePolicyPoint(formData: FormData) {
 }
 
 export default async function CmsEditorPage() {
+  const ownerContext = await getCurrentOwnerContext();
+  if (!ownerContext.isOwner) {
+    redirect('/dashboard/seller');
+  }
+
   const content = await getAdminCmsContent();
 
   return (
     <div className="flex">
-      <Sidebar baseHref="/dashboard/seller" mode="seller" title="CMS Editor" subtitle={content.ready ? 'Supabase connected' : 'Supabase service role missing'} />
+      <Sidebar baseHref="/dashboard/seller" mode="seller" title="CMS Editor" subtitle={content.ready ? 'Supabase connected' : 'Supabase service role missing'} canManageCms />
 
       <div className="min-w-0 flex-1 px-4 py-6 md:px-8 lg:px-10">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">

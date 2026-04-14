@@ -26,9 +26,11 @@ Modern agrarian hyperlocal marketplace built with Next.js 14, TypeScript, Tailwi
 - `SUPABASE_SERVICE_ROLE_KEY` for CMS writes from the dashboard editor
 - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
 - `CLERK_SECRET_KEY`
+- `OSTRA_OWNER_CLERK_USER_IDS` or `OSTRA_OWNER_EMAILS` to allow owner-only CMS access
+- `OPENAI_API_KEY` and optional `OPENAI_MODEL` for market trend summaries
 
 ## Database
 
 Run the schema in `supabase/schema.sql` against your Supabase project before connecting the app to live data.
 
-The CMS editor at `/dashboard/seller/cms` uses the Supabase service role key to create, update, and delete content entries, then revalidates the public pages automatically.
+The CMS editor at `/dashboard/seller/cms` uses the Supabase service role key to create, update, and delete content entries, then revalidates the public pages automatically. Only the owner account defined by `OSTRA_OWNER_CLERK_USER_IDS` or `OSTRA_OWNER_EMAILS` can access it.

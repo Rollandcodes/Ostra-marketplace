@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 const buyerItems = [
   { href: '#overview', label: 'Overview', icon: LayoutDashboard },
   { href: '#saved', label: 'Saved Listings', icon: Bookmark },
-  { href: '#messages', label: 'Messages', icon: MessageSquare },
+  { href: '/dashboard/inbox', label: 'Messages', icon: MessageSquare },
   { href: '#profile', label: 'Profile', icon: UserRound },
 ];
 
@@ -17,14 +17,13 @@ const sellerItems = [
   { href: '#overview', label: 'Overview', icon: LayoutDashboard },
   { href: '#inventory', label: 'Inventory', icon: Package },
   { href: '#analytics', label: 'Analytics', icon: BarChart3 },
-  { href: '#messages', label: 'Messages', icon: MessageSquare },
+  { href: '/dashboard/inbox', label: 'Messages', icon: MessageSquare },
   { href: '#profile', label: 'Profile', icon: UserRound },
-  { href: '/dashboard/seller/cms', label: 'CMS Editor', icon: LayoutDashboard },
 ];
 
-export function Sidebar({ baseHref, mode, title, subtitle }: { baseHref: string; mode: 'buyer' | 'seller'; title: string; subtitle: string }) {
+export function Sidebar({ baseHref, mode, title, subtitle, canManageCms = false }: { baseHref: string; mode: 'buyer' | 'seller'; title: string; subtitle: string; canManageCms?: boolean }) {
   const pathname = usePathname();
-  const items = mode === 'buyer' ? buyerItems : sellerItems;
+  const items = mode === 'buyer' ? buyerItems : canManageCms ? [...sellerItems, { href: '/dashboard/seller/cms', label: 'CMS Editor', icon: LayoutDashboard }] : sellerItems;
 
   return (
     <aside className="sticky top-0 hidden h-screen w-72 border-r border-black/5 bg-white/90 px-5 py-6 lg:flex lg:flex-col">
@@ -42,7 +41,7 @@ export function Sidebar({ baseHref, mode, title, subtitle }: { baseHref: string;
           return (
             <Link
               key={`${baseHref}${item.href}`}
-              href={`${baseHref}${item.href}`}
+              href={item.href.startsWith('/') ? item.href : `${baseHref}${item.href}`}
               className={cn(
                 'flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition',
                 active ? 'bg-primary/10 text-primary' : 'text-foreground/70 hover:bg-muted hover:text-foreground',

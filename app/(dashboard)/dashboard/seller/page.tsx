@@ -1,19 +1,24 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, PlusCircle, Search, ShieldCheck, MessageSquare } from 'lucide-react';
+import { currentUser } from '@clerk/nextjs/server';
 import { AnalyticsChart } from '@/components/dashboard/analytics-chart';
 import { StatsCard } from '@/components/dashboard/stats-card';
 import { Sidebar } from '@/components/layout/sidebar';
+import { getCurrentOwnerContext } from '@/lib/clerk-ownership';
 import { getMarketplaceListings } from '@/lib/marketplace';
 
 export default async function SellerDashboardPage() {
+  const [user, ownerContext] = await Promise.all([currentUser(), getCurrentOwnerContext()]);
   const listings = await getMarketplaceListings();
   const totalViews = listings.reduce((sum, listing) => sum + listing.views, 0);
   const featuredCount = listings.filter((listing) => listing.isFeatured).length;
+  const sellerName = user?.fullName ?? user?.firstName ?? user?.emailAddresses[0]?.emailAddress ?? 'Your Seller Profile';
+  const memberSince = user?.createdAt ? new Date(user.createdAt).getFullYear() : new Date().getFullYear();
 
   return (
     <div className="flex">
-      <Sidebar baseHref="/dashboard/seller" mode="seller" title="Green Valley Farm" subtitle="Verified seller" />
+      <Sidebar baseHref="/dashboard/seller" mode="seller" title={sellerName} subtitle="Verified seller" canManageCms={ownerContext.isOwner} />
 
       <div className="min-w-0 flex-1 px-4 py-6 md:px-8 lg:px-10">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -105,7 +110,7 @@ export default async function SellerDashboardPage() {
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Promotion</p>
               <h2 className="mt-2 font-display text-2xl font-extrabold tracking-tight">Your organic goods are in demand this week</h2>
             </div>
-            <Link href="/about" className="inline-flex items-center gap-2 rounded-xl bg-secondary px-4 py-3 text-sm font-semibold text-secondary-foreground">
+            <Link href="/dashboard/seller/trends" className="inline-flex items-center gap-2 rounded-xl bg-secondary px-4 py-3 text-sm font-semibold text-secondary-foreground">
               Analyze Market Trends <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -120,7 +125,7 @@ export default async function SellerDashboardPage() {
               </div>
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Profile</p>
-                <h2 className="mt-2 font-display text-2xl font-extrabold tracking-tight">{listings[0]?.seller.name ?? 'Your Seller Profile'}</h2>
+                <h2 className="mt-2 font-display text-2xl font-extrabold tracking-tight">{sellerName}</h2>
                 <p className="mt-1 text-sm text-muted-foreground">Protected storefront, verified local seller, and community-first shipping options.</p>
               </div>
             </div>
@@ -130,7 +135,7 @@ export default async function SellerDashboardPage() {
             <div className="mt-4 flex items-center gap-3 rounded-2xl bg-muted p-4">
               <ShieldCheck className="h-6 w-6 text-primary" />
               <div>
-                <p className="font-semibold">Verified seller since 2024</p>
+                <p className="font-semibold">Verified seller since {memberSince}</p>
                 <p className="text-sm text-muted-foreground">Your account is linked to identity and payout verification.</p>
               </div>
             </div>

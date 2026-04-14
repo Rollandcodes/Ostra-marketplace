@@ -20,7 +20,7 @@ export default async function BuyerDashboardPage({ searchParams }: { searchParam
           <div>
             <p className="hero-kicker">Buyer Hub</p>
             <h1 id="overview" className="mt-4 font-display text-5xl font-extrabold tracking-tight text-balance">Welcome back!</h1>
-            <p className="mt-2 max-w-2xl text-muted-foreground">Browse live listings, revisit saved items, and continue conversations with sellers.</p>
+            <p className="mt-2 max-w-2xl text-muted-foreground">Browse live listings, revisit saved items, and continue conversations with sellers in the dedicated inbox.</p>
           </div>
           <Link href="/listings" className="inline-flex items-center rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-soft">
             Start shopping <ArrowRight className="ml-2 h-4 w-4" />
@@ -91,6 +91,9 @@ export default async function BuyerDashboardPage({ searchParams }: { searchParam
                   <p className="font-semibold">Need product details?</p>
                   <p className="mt-1 text-sm text-muted-foreground">Use each listing page to contact the seller directly by email or WhatsApp.</p>
                 </div>
+                <Link href="/dashboard/inbox" className="inline-flex items-center rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
+                  Open inbox
+                </Link>
               </div>
             </div>
           </div>
