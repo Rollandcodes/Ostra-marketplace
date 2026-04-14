@@ -14,7 +14,7 @@ export default async function BuyerSavedListingsPage({ searchParams }: { searchP
     <div className="flex">
       <Sidebar baseHref="/dashboard/buyer" mode="buyer" title="Buyer Hub" subtitle="Saved listings" />
 
-      <div className="min-w-0 flex-1 px-4 py-6 md:px-8 lg:px-10">
+      <div className="min-w-0 flex-1 px-4 py-5 md:px-8 md:py-6 lg:px-10">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="hero-kicker">Collection</p>
@@ -27,26 +27,26 @@ export default async function BuyerSavedListingsPage({ searchParams }: { searchP
         </div>
 
         <div className="mt-8 grid gap-4 md:grid-cols-3">
-          <div className="soft-card p-6">
+          <div className="soft-card reveal-up reveal-delay-1 p-5 md:p-6 hover-lift-subtle">
             <p className="text-sm text-muted-foreground">Total saved</p>
             <p className="mt-4 font-display text-4xl font-extrabold tracking-tight">{saved.length}</p>
             <p className="mt-2 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary"><Bookmark className="h-4 w-4" /> Curated list</p>
           </div>
-          <div className="soft-card p-6">
+          <div className="soft-card reveal-up reveal-delay-2 p-5 md:p-6 hover-lift-subtle">
             <p className="text-sm text-muted-foreground">Favorites this week</p>
             <p className="mt-4 font-display text-4xl font-extrabold tracking-tight">{Math.min(4, saved.length)}</p>
             <p className="mt-2 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary"><Heart className="h-4 w-4" /> Updated</p>
           </div>
-          <div className="soft-card p-6">
+          <div className="soft-card reveal-up reveal-delay-3 p-5 md:p-6 hover-lift-subtle">
             <p className="text-sm text-muted-foreground">Categories tracked</p>
             <p className="mt-4 font-display text-4xl font-extrabold tracking-tight">{new Set(saved.map((item) => item.category)).size}</p>
             <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary">Signals on</p>
           </div>
         </div>
 
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-8 grid gap-5 md:gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {saved.map((listing) => (
-            <article key={listing.id} className="soft-card overflow-hidden">
+            <article key={listing.id} className="soft-card reveal-up hover-lift-subtle overflow-hidden">
               <div className="relative aspect-[4/3]">
                 <Image src={listing.images[0]} alt={listing.title[locale]} fill className="object-cover" />
               </div>

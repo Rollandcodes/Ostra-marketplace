@@ -134,3 +134,52 @@ textarea:focus-visible {
   -webkit-backdrop-filter: blur(24px);
   backdrop-filter: blur(24px);
 }
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal-up {
+  animation: reveal-up 420ms ease both;
+}
+
+.reveal-delay-1 {
+  animation-delay: 70ms;
+}
+
+.reveal-delay-2 {
+  animation-delay: 140ms;
+}
+
+.reveal-delay-3 {
+  animation-delay: 210ms;
+}
+
+.hover-lift-subtle {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.hover-lift-subtle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 40px -24px rgba(25, 28, 29, 0.28);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-up,
+  .reveal-delay-1,
+  .reveal-delay-2,
+  .reveal-delay-3,
+  .hover-lift-subtle {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}

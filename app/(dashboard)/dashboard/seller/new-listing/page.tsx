@@ -12,7 +12,7 @@ export default async function SellerNewListingPage() {
     <div className="flex">
       <Sidebar baseHref="/dashboard/seller" mode="seller" title={sellerName} subtitle="Create a listing" canManageCms={ownerContext.isOwner} />
 
-      <div className="min-w-0 flex-1 px-4 py-6 md:px-8 lg:px-10">
+      <div className="min-w-0 flex-1 px-4 py-5 md:px-8 md:py-6 lg:px-10">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="hero-kicker">Seller Studio</p>
@@ -25,7 +25,7 @@ export default async function SellerNewListingPage() {
         </div>
 
         <form className="mt-8 space-y-6">
-          <section className="soft-card p-6">
+          <section className="soft-card reveal-up reveal-delay-1 p-5 md:p-6">
             <h2 className="font-display text-2xl font-extrabold tracking-tight">Listing essentials</h2>
             <div className="mt-5 grid gap-4 md:grid-cols-2">
               <input className="rounded-xl bg-muted px-4 py-3 text-sm" placeholder="Listing title" />
@@ -46,7 +46,7 @@ export default async function SellerNewListingPage() {
             </div>
           </section>
 
-          <section className="soft-card p-6">
+          <section className="soft-card reveal-up reveal-delay-2 p-5 md:p-6">
             <h2 className="font-display text-2xl font-extrabold tracking-tight">Photos</h2>
             <div className="mt-5 rounded-2xl border border-dashed border-black/10 bg-muted/50 p-8 text-center text-sm text-muted-foreground">
               Add up to 8 images. Drag and drop support can be connected here.
