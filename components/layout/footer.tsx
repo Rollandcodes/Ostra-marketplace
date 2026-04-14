@@ -10,7 +10,7 @@ export function Footer() {
 
   return (
     <footer className="mt-24 border-t border-black/5 bg-white/85">
-      <div className="section-shell grid gap-10 py-14 md:grid-cols-4">
+      <div className="section-shell grid gap-10 py-12 md:grid-cols-2 md:py-14 xl:grid-cols-4">
         <div className="space-y-4">
           <Link href="/" className="font-display text-lg font-extrabold text-primary">
             Ostra Marketplace
@@ -18,7 +18,7 @@ export function Footer() {
           <p className="max-w-xs text-sm text-muted-foreground">
             Buy and sell locally across Turkey, Northern Cyprus, and South Cyprus with a design-forward agrarian marketplace.
           </p>
-          <div className="flex items-center gap-3 text-foreground/60">
+          <div className="flex flex-wrap items-center gap-3 text-foreground/60">
             <Instagram className="h-4 w-4" />
             <Facebook className="h-4 w-4" />
             <Linkedin className="h-4 w-4" />
@@ -45,19 +45,19 @@ export function Footer() {
           </ul>
         </div>
 
-        <div className="soft-card p-6">
+        <div className="soft-card p-5 sm:p-6 md:col-span-2 xl:col-span-1">
           <p className="text-sm font-semibold text-foreground">Stay updated</p>
           <p className="mt-2 text-sm text-muted-foreground">Get featured listings, editorial stories, and policy updates.</p>
-          <div className="mt-4 flex gap-2">
-            <input className="w-full rounded-xl bg-muted px-4 py-3 text-sm outline-none placeholder:text-foreground/40" placeholder="Email address" aria-label="Email address" />
-            <button aria-label="Subscribe to newsletter" title="Subscribe to newsletter" className="inline-flex items-center gap-2 rounded-xl bg-secondary px-4 py-3 text-sm font-semibold text-secondary-foreground">
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+            <input className="min-w-0 w-full rounded-xl bg-muted px-4 py-3 text-sm outline-none placeholder:text-foreground/40" placeholder="Email address" aria-label="Email address" />
+            <button aria-label="Subscribe to newsletter" title="Subscribe to newsletter" className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-secondary px-4 py-3 text-sm font-semibold text-secondary-foreground sm:w-auto">
               <span>Subscribe</span>
               <ArrowRight className="h-4 w-4" />
             </button>
           </div>
         </div>
       </div>
-      <div className="section-shell flex flex-col gap-3 border-t border-black/5 py-5 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between">
+      <div className="section-shell flex flex-col gap-2 border-t border-black/5 py-5 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between md:gap-3">
         <p>© 2026 Ostra Marketplace. The Modern Agrarian.</p>
         <p>Built for local commerce across the eastern Mediterranean.</p>
       </div>
