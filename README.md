@@ -16,15 +16,19 @@ Modern agrarian hyperlocal marketplace built with Next.js 14, TypeScript, Tailwi
 - `/listings/[id]` listing detail
 - `/login` and `/signup`
 - `/dashboard/seller` and `/dashboard/buyer`
+- `/dashboard/seller/cms` CMS editor for blog, FAQ, and policies
 - `/about`, `/faq`, `/blog`, `/policies`
 
 ## Environment variables
 
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY` for CMS writes from the dashboard editor
 - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
 - `CLERK_SECRET_KEY`
 
 ## Database
 
 Run the schema in `supabase/schema.sql` against your Supabase project before connecting the app to live data.
+
+The CMS editor at `/dashboard/seller/cms` uses the Supabase service role key to create, update, and delete content entries, then revalidates the public pages automatically.

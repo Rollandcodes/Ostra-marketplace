@@ -32,7 +32,13 @@ export default async function PoliciesPage({ searchParams }: { searchParams?: Re
         </aside>
 
         <section className="space-y-8">
-          {policySections.map((section) => (
+          {policySections.length === 0 ? (
+            <div className="soft-card p-8">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">No policy content yet</p>
+              <h2 className="mt-3 font-display text-2xl font-extrabold tracking-tight">Add policy sections and points in the CMS to publish this page.</h2>
+              <p className="mt-2 text-sm text-muted-foreground">Populate `cms_policy_sections` and `cms_policy_points` in Supabase.</p>
+            </div>
+          ) : policySections.map((section) => (
             <article key={section.slug} id={section.slug} className="soft-card p-8">
               <div className="flex items-center justify-between gap-4">
                 <div>

@@ -27,7 +27,13 @@ export default async function FaqPage({ searchParams }: { searchParams?: Record<
       </section>
 
       <section className="mt-16 grid gap-6 lg:grid-cols-2">
-        {faqSections.map((section) => {
+        {faqSections.length === 0 ? (
+          <div className="soft-card p-8 lg:col-span-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">No FAQ content yet</p>
+            <h2 className="mt-3 font-display text-2xl font-extrabold tracking-tight">Add sections and questions to the CMS to publish help content.</h2>
+            <p className="mt-2 text-sm text-muted-foreground">Populate `cms_faq_sections` and `cms_faq_questions` in Supabase.</p>
+          </div>
+        ) : faqSections.map((section) => {
           const title = section.title[locale];
           const Icon = icons[section.slug as keyof typeof icons] ?? MessageSquare;
           return (

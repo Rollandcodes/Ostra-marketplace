@@ -19,6 +19,7 @@ const sellerItems = [
   { href: '#analytics', label: 'Analytics', icon: BarChart3 },
   { href: '#messages', label: 'Messages', icon: MessageSquare },
   { href: '#profile', label: 'Profile', icon: UserRound },
+  { href: '/dashboard/seller/cms', label: 'CMS Editor', icon: LayoutDashboard },
 ];
 
 export function Sidebar({ baseHref, mode, title, subtitle }: { baseHref: string; mode: 'buyer' | 'seller'; title: string; subtitle: string }) {
@@ -36,7 +37,7 @@ export function Sidebar({ baseHref, mode, title, subtitle }: { baseHref: string;
       </div>
       <nav className="space-y-1">
         {items.map((item) => {
-          const active = pathname === baseHref && item.href === '#overview';
+          const active = item.href.startsWith('/') ? pathname === item.href : pathname === baseHref && item.href === '#overview';
           const Icon = item.icon;
           return (
             <Link

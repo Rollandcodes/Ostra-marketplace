@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-import { blogPosts as fallbackBlogPosts, faqSections as fallbackFaqSections, policySections as fallbackPolicySections } from './site-data';
 import type { Locale } from './i18n';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -86,16 +85,7 @@ function asBlogRow(row: BlogRow): BlogRow {
 export async function getCmsBlogPosts(): Promise<CmsBlogPost[]> {
   const client = getClient();
   if (!client) {
-    return fallbackBlogPosts.map((post) => ({
-      slug: post.slug,
-      title: post.title,
-      excerpt: post.excerpt,
-      category: post.category,
-      date: post.date,
-      image: post.image,
-      is_featured: post.slug === fallbackBlogPosts[0]?.slug,
-      sort_order: 0,
-    }));
+    return [];
   }
 
   const { data } = await client
@@ -104,19 +94,6 @@ export async function getCmsBlogPosts(): Promise<CmsBlogPost[]> {
     .order('sort_order', { ascending: true });
 
   const rows = (data as BlogRow[] | null) ?? [];
-  if (rows.length === 0) {
-    return fallbackBlogPosts.map((post, index) => ({
-      slug: post.slug,
-      title: post.title,
-      excerpt: post.excerpt,
-      category: post.category,
-      date: post.date,
-      image: post.image,
-      is_featured: index === 0,
-      sort_order: index + 1,
-    }));
-  }
-
   return rows.map((row) => ({
     ...row,
     title: toLocaleMap(row.title, row.title?.en ?? row.slug),
@@ -127,21 +104,7 @@ export async function getCmsBlogPosts(): Promise<CmsBlogPost[]> {
 export async function getCmsFaqSections(): Promise<CmsFaqSection[]> {
   const client = getClient();
   if (!client) {
-    return fallbackFaqSections.map((section) => ({
-      slug: section.title.toLowerCase().replace(/\s+/g, '-'),
-      title: { en: section.title, tr: section.title, el: section.title, ru: section.title },
-      accent: section.accent,
-      sort_order: 0,
-      questions: section.questions.map((question) => ({
-        question: { en: question, tr: question, el: question, ru: question },
-        answer: {
-          en: 'Answers appear here with policy-safe, buyer-friendly guidance and links to the relevant support articles.',
-          tr: 'Cevaplar, politika uyumlu ve alıcı dostu rehberlik içerir.',
-          el: 'Οι απαντήσεις εμφανίζονται εδώ με ασφαλείς οδηγίες για αγοραστές.',
-          ru: 'Ответы здесь содержат безопасные и понятные рекомендации для покупателей.',
-        },
-      })),
-    }));
+    return [];
   }
 
   const [sectionsResult, questionsResult] = await Promise.all([
@@ -153,21 +116,7 @@ export async function getCmsFaqSections(): Promise<CmsFaqSection[]> {
   const questions = (questionsResult.data as FaqQuestionRow[] | null) ?? [];
 
   if (sections.length === 0) {
-    return fallbackFaqSections.map((section) => ({
-      slug: section.title.toLowerCase().replace(/\s+/g, '-'),
-      title: { en: section.title, tr: section.title, el: section.title, ru: section.title },
-      accent: section.accent,
-      sort_order: 0,
-      questions: section.questions.map((question) => ({
-        question: { en: question, tr: question, el: question, ru: question },
-        answer: {
-          en: 'Answers appear here with policy-safe, buyer-friendly guidance and links to the relevant support articles.',
-          tr: 'Cevaplar, politika uyumlu ve alıcı dostu rehberlik içerir.',
-          el: 'Οι απαντήσεις εμφανίζονται εδώ με ασφαλείς οδηγίες για αγοραστές.',
-          ru: 'Ответы здесь содержат безопасные и понятные рекомендации для покупателей.',
-        },
-      })),
-    }));
+    return [];
   }
 
   return sections.map((section) => ({
@@ -185,13 +134,7 @@ export async function getCmsFaqSections(): Promise<CmsFaqSection[]> {
 export async function getCmsPolicySections(): Promise<CmsPolicySection[]> {
   const client = getClient();
   if (!client) {
-    return fallbackPolicySections.map((section) => ({
-      slug: section.title.toLowerCase().replace(/\s+/g, '-'),
-      title: { en: section.title, tr: section.title, el: section.title, ru: section.title },
-      updated: section.updated,
-      sort_order: 0,
-      points: section.points.map((point) => ({ en: point, tr: point, el: point, ru: point })),
-    }));
+    return [];
   }
 
   const [sectionsResult, pointsResult] = await Promise.all([
@@ -203,13 +146,7 @@ export async function getCmsPolicySections(): Promise<CmsPolicySection[]> {
   const points = (pointsResult.data as PolicyPointRow[] | null) ?? [];
 
   if (sections.length === 0) {
-    return fallbackPolicySections.map((section) => ({
-      slug: section.title.toLowerCase().replace(/\s+/g, '-'),
-      title: { en: section.title, tr: section.title, el: section.title, ru: section.title },
-      updated: section.updated,
-      sort_order: 0,
-      points: section.points.map((point) => ({ en: point, tr: point, el: point, ru: point })),
-    }));
+    return [];
   }
 
   return sections.map((section) => ({

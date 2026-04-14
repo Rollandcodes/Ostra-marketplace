@@ -26,7 +26,13 @@ export default async function BlogPage({ searchParams }: { searchParams?: Record
       </section>
 
       <section id="stories" className="mt-16 grid gap-6 lg:grid-cols-2">
-        {blogPosts.map((post) => (
+        {blogPosts.length === 0 ? (
+          <div className="soft-card p-8 lg:col-span-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">No articles yet</p>
+            <h2 className="mt-3 font-display text-2xl font-extrabold tracking-tight">Editorial content will appear here once CMS entries are published.</h2>
+            <p className="mt-2 text-sm text-muted-foreground">Add rows to `cms_blog_posts` in Supabase to populate this page.</p>
+          </div>
+        ) : blogPosts.map((post) => (
           <article key={post.slug} className="soft-card overflow-hidden">
             <div className="relative aspect-[16/10]">
               <Image src={post.image} alt={post.title[locale]} fill className="object-cover" />

@@ -184,34 +184,3 @@ export const buyerStats = [
   { label: 'Recently Viewed', value: '5', delta: 'Tonight', icon: 'eye' },
 ];
 
-export const blogPosts: BlogPost[] = [
-  {
-    slug: 'soil-secret',
-    title: { en: "The Soil's Secret: Reviving Ancient Grains.", tr: 'Toprağın Sırrı: Kadim Tohumları Canlandırmak.', el: 'Το μυστικό του εδάφους.', ru: 'Секрет почвы.' },
-    excerpt: { en: 'How heirloom seeds are healing our ecosystem and tables.', tr: 'Ata tohumları ekosistemi nasıl iyileştiriyor?', el: 'Πώς οι παραδοσιακοί σπόροι θεραπεύουν το οικοσύστημα.', ru: 'Как старые семена восстанавливают экосистему.' },
-    category: 'Featured Editorial',
-    date: 'March 14, 2024',
-    image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=80&auto=format&fit=crop',
-  },
-  {
-    slug: 'sustainable-farming',
-    title: { en: 'Why Cover Crops are the Unsung Heroes of Climate Action.', tr: 'Örtü bitkileri neden görünmeyen kahramanlardır?', el: 'Γιατί οι καλλιέργειες κάλυψης έχουν σημασία;', ru: 'Почему покровные культуры важны.' },
-    excerpt: { en: 'Carbon sequestration is happening under our feet.', tr: 'Karbon yakalama tam ayağımızın altında gerçekleşiyor.', el: 'Η δέσμευση άνθρακα συμβαίνει κάτω από τα πόδια μας.', ru: 'Поглощение углерода происходит прямо под ногами.' },
-    category: 'Sustainable Farming',
-    date: 'March 10, 2024',
-    image: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1200&q=80&auto=format&fit=crop',
-  },
-];
-
-export const faqSections = [
-  { title: 'Buying', accent: 'primary', questions: ['How do I track my fresh produce order?', 'What payment methods do you accept?'] },
-  { title: 'Selling', accent: 'secondary', questions: ['What are the vendor fees on Ostra?', 'How do I list seasonal products?'] },
-  { title: 'Trust & Safety', accent: 'destructive', questions: ['How do you verify producer quality?'] },
-  { title: 'Account', accent: 'muted', questions: ['Can I have both a Buyer and Seller profile?'] },
-];
-
-export const policySections = [
-  { title: 'Privacy Policy', updated: 'June 14, 2024', points: ['We collect only what we need to bring the farm to your table efficiently and securely.', 'Information is used for fulfillment, analytics, and community trust.', 'We share data only with operational partners bound by strict confidentiality agreements.'] },
-  { title: 'Terms of Service', updated: 'June 14, 2024', points: ['The marketplace operates as a peer-to-peer community with seller accountability.', 'All listings must be accurate, legal, and respectful of local regulations.', 'Disputes are handled with a community-first resolution process.'] },
-  { title: 'Shipping Policy', updated: 'June 14, 2024', points: ['Local pickup and courier options are available by listing type.', 'Perishable items should include a handling and freshness note.', 'Tracking details are surfaced in buyer and seller inboxes in real time.'] },
-];
